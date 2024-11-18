@@ -1,0 +1,117 @@
+#include <iostream>
+#include <string>
+#include <map>
+#include <set>
+
+using namespace std;
+
+
+struct Node {
+    string word;   
+    Node* next;   
+    Node(string w) : word(w), next(nullptr) {}
+};
+
+
+void append(Node*& head, const string& word) {
+    if (head == nullptr) {
+        head = new Node(word);
+    } else {
+        Node* temp = head;
+        while (temp->next != nullptr) {
+            temp = temp->next;
+        }
+        temp->next = new Node(word);
+    }
+}
+
+
+void printList(Node* head) {
+    Node* temp = head;
+    while (temp != nullptr) {
+        cout << temp->word << " ";
+        temp = temp->next;
+    }
+    cout << endl;
+}
+
+
+void findMostFrequent(Node* head) {
+    map<string, int> wordCount;
+    Node* temp = head;
+
+    while (temp != nullptr) {
+        wordCount[temp->word]++;
+        temp = temp->next;
+    }
+
+    string mostFrequent;
+    int maxCount = 0;
+
+    for (const auto& pair : wordCount) {
+        if (pair.second > maxCount) {
+            maxCount = pair.second;
+            mostFrequent = pair.first;
+        }
+    }
+
+    cout << "Từ xuất hiện nhiều nhất: " << mostFrequent << " (" << maxCount << " lần)" << endl;
+}
+
+
+void removeRepeatedWords(Node*& head) {
+    Node* temp = head;
+
+    while (temp != nullptr && temp->next != nullptr) {
+        if (temp->word == temp->next->word) {
+            Node* duplicate = temp->next;
+            temp->next = temp->next->next;
+            delete duplicate;
+        } else {
+            temp = temp->next;
+        }
+    }
+}
+
+
+int countUniqueWords(Node* head) {
+    set<string> uniqueWords;
+    Node* temp = head;
+
+    while (temp != nullptr) {
+        uniqueWords.insert(temp->word);
+        temp = temp->next;
+    }
+
+    return uniqueWords.size();
+}
+
+
+int main() {
+    Node* head = nullptr;
+
+    
+    append(head, "xanh");
+    append(head, "xanh");
+    append(head, "trời");
+    append(head, "cao");
+    append(head, "trời");
+    append(head, "cao");
+
+    cout << "Danh sách ban đầu: ";
+    printList(head);
+
+    
+    findMostFrequent(head);
+
+    
+    removeRepeatedWords(head);
+    cout << "Danh sách sau khi loại bỏ từ láy: ";
+    printList(head);
+
+    
+    int uniqueWordCount = countUniqueWords(head);
+    cout << "Số từ vựng duy nhất trong câu: " << uniqueWordCount << endl;
+
+    return 0;
+}
